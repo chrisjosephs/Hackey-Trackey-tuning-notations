@@ -2398,13 +2398,17 @@ end
 ------------------------------
 function tracker:generateFrequencies()
   tuning = self.tuning
+  stepsFromA = -23
+  if self.tuning.stepsFromA then
+      stepsFromA = self.tuning.stepsFromA
+      end
   if self.tuning.cents then
     local frequenciesTable = {}
     local concertA_hz = 440.0
     for k, v in pairs(self.pitchTable) do
       --- this assumes equal division of octaves cents
       --- for scales with cents specified per note will have to add the cents serially
-      frequenciesTable[k] = concertA_hz * (2^((tuning.cents * k) / 1200))
+      frequenciesTable[k] = concertA_hz * (2^((tuning.cents * (k + stepsFromA)) / 1200))
     end
     self.frequenciesTable = frequenciesTable
   end
@@ -2434,7 +2438,7 @@ function tracker:generatePitchColors()
         local lightWavelengthNM = lightWavelength * 1000000000;
         -- var lightRGB = getColorFromWaveLength (lightWavelengthNM) :
         -- Color values in the range -1 to 1
-        local gamma = 1.50;
+        local gamma = 1.5;
         local blue, green, red, factor = 0;
         if (lightWavelengthNM >= 350 and lightWavelengthNM < 440) then
           -- From Purple (1, 0, 1) to Blue (0, 0, 1), with increasing intensity (set below)
@@ -2478,7 +2482,7 @@ function tracker:generatePitchColors()
         elseif (lightWavelengthNM >= 420 and lightWavelengthNM < 645) then
           factor = 1.0
         elseif (lightWavelengthNM >= 645 and lightWavelengthNM <= 780) then
-          factor = 0.4 + 0.8 * (780 - lightWavelengthNM) / (780 - 645);
+          factor = 0.2 + 0.8 * (780 - lightWavelengthNM) / (780 - 645);
         else
           factor = 0.0;
         end
